@@ -7,7 +7,7 @@ pipeline{
     environment {
         SCANNER_HOME=tool 'sonar-scanner'
         GIT_REPO_NAME = "Tetris-V1"
-        GIT_USER_NAME = "RajinikanthVadla"      
+        GIT_USER_NAME = "prem409"      
     }
     stages {
         stage('clean workspace'){
@@ -17,7 +17,7 @@ pipeline{
         }
         stage('Checkout from Git'){
             steps{
-                git branch: 'main', url: 'https://github.com/RajinikanthVadla/Tetris-V1.git'
+                git branch: 'main', url: 'https://github.com/prem409/Tetris-V1.git'
             }
         }
         stage("Sonarqube Analysis "){
@@ -56,27 +56,27 @@ pipeline{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
                        sh "docker build -t tetrisv1 ."
-                       sh "docker tag tetrisv1 aiworklabs/workshop:latest"
-                       sh "docker push aiworklabs/workshop:latest"
+                       sh "docker tag tetrisv1 premdoc408/prem:latest"
+                       sh "docker push :latest"premdoc408/prem
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image aiworklabs/workshop:latest > trivyimage.txt"
+                sh "trivy image premdoc408/prem:latest > trivyimage.txt"
             }
         }
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/RajinikanthVadla/Tetris-V1.git'
+                git branch: 'main', url: 'https://github.com/prem409/Tetris-V1.git'
             }
         }
         stage('Update Deployment File') {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-                       NEW_IMAGE_NAME = "aiworklabs/workshop:latest"   
+                       NEW_IMAGE_NAME = "premdoc408/prem:latest"   
                        sh "sed -i 's|image: .*|image: $NEW_IMAGE_NAME|' deployment.yml"
                        sh 'git add deployment.yml'
                        sh "git commit -m 'Update deployment image to $NEW_IMAGE_NAME'"
